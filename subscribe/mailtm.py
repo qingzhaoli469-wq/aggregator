@@ -523,7 +523,7 @@ class MailTM(TemporaryMail):
                     )
                 )
         except:
-            logger.error(f"failed to list messages, email: {self.address}")
+            logger.error(f"failed to list messages, email: {account.address}")
         return messages
 
     def delete_account(self, account: Account) -> bool:
