@@ -1,4 +1,3 @@
-
 {
   "sites": [],
   "crawl": {
@@ -20,70 +19,14 @@
       "pages": 5,
       "exclude": "",
       "channels": {
-        "abc_vpn_configs": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        },
-        "v2Line": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        },
-        "tgproxypink": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        },
-        "free1_vpn": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        },
-        "OnlineVpnConfigs": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        },
-        "PrivateVPNs": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        },
-        "ConfigOrg": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        },
-        "pgkj666": {
-          "include": "",
-          "exclude": "",
-          "task": {
-            "rename": "TG-{name}"
-          },
-          "push_to": ["free"]
-        }
+        "abc_vpn_configs": true,
+        "v2Line": true,
+        "tgproxypink": true,
+        "free1_vpn": true,
+        "OnlineVpnConfigs": true,
+        "PrivateVPNs": true,
+        "ConfigOrg": true,
+        "pgkj666": true
       }
     },
     "google": {
