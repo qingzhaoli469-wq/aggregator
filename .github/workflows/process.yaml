@@ -4,6 +4,11 @@ on:
     - cron: "05 03 * * *"
     - cron: "05 11 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "subscribe/examples/config.default.json"
+      - ".github/workflows/process.yaml"
 
 env:
   # time zone
