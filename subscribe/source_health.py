@@ -36,7 +36,7 @@ def load(push, item) -> dict:
     return {"version": 1, "sources": {}}
 
 
-def apply_cooldowns(sites: list, state: dict) -> None:
+def apply_cooldowns(sites: list, state: dict, managed_names: set[str] | None = None) -> None:
     """Temporarily skip sources after repeated failures; probe them again after cooldown."""
     now = _now()
     records = state.setdefault("sources", {})
@@ -44,6 +44,8 @@ def apply_cooldowns(sites: list, state: dict) -> None:
         if getattr(site, "discovered", False):
             continue
         name = str(site.name).strip().lower()
+        if managed_names is not None and name not in managed_names:
+            continue
         record = records.get(name, {})
         until = _parse_time(record.get("disabled_until", ""))
         if until and until > now:
