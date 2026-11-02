@@ -199,5 +199,6 @@
         "filename": "crawledproxies.txt"
       }
     }
-  }
+  },
+  "delay": 1500
 }
