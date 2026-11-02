@@ -455,7 +455,8 @@ class AirPort:
             if rr is not None
             else self.get_register_require(
                 domain=self.ref,
-                default=False,
+                # Fail closed when registration requirements cannot be determined.
+                default=True,
                 api_prefix=self.api_prefix,
             )
         )
