@@ -460,7 +460,7 @@ class AirPort:
             )
         )
 
-        # 需要邀请码或者强制验证
+        # Skip registration paths that require an unavailable human challenge.
         if (
             (rr.invite and not invite_code)
             or (skip_captcha and rr.recaptcha)
@@ -469,13 +469,11 @@ class AirPort:
             self.available = False
             return "", ""
 
-        # API地址前缀
         self.api_prefix = rr.api_prefix or self.api_prefix
 
         if not rr.verify:
             email = utils.random_chars(length=random.randint(6, 10), punctuation=False)
             password = utils.random_chars(length=random.randint(8, 16), punctuation=True)
-
             email_suffixs = rr.whitelist if rr.whitelist else EMAILS_DOMAINS
             email_domain = random.choice(email_suffixs)
             if not email_domain:
@@ -483,53 +481,62 @@ class AirPort:
 
             email = f"{email}@{email_domain}"
             return self.register(email=email, password=password, invite_code=invite_code, retry=retry)
-        else:
-            only_gmail = True if rr.whitelist and rr.verify else False
 
-            try:
-                mailbox = mailtm.create_instance(only_gmail=only_gmail)
-                account = mailbox.get_account()
-                if not account:
-                    logger.error(f"cannot create temporary email account, site: {self.ref}")
-                    return "", ""
-
-                message = None
-                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                    starttime = time.time()
-                    try:
-                        future = executor.submit(mailbox.monitor_account, account, 120, random.randint(1, 3))
-                        success = self.sen_email_verify(email=account.address, retry=3)
-                        if not success:
-                            executor.shutdown(wait=False)
-                            return "", ""
-                        message = future.result(timeout=120)
-                        logger.debug(
-                            f"email has been received, domain: {self.ref}\tcost: {int(time.time()- starttime)}s"
-                        )
-                    except concurrent.futures.TimeoutError:
-                        logger.error(
-                            f"receiving mail timeout, site: {self.ref}, address: {mailbox.api_address}, email: {account.address}"
-                        )
-
-                if not message:
-                    return "", ""
-
-                # 如果标准正则无法提取验证码则直接匹配数字
-                mask = mailbox.extract_mask(message.text) or mailbox.extract_mask(message.text, r"[：\s]+([0-9]{6})")
-                mailbox.delete_account(account=account)
-                if not mask:
-                    logger.error(f"cannot fetch mask, url: {self.ref}, message: {message.text}")
-                    return "", ""
-
-                return self.register(
-                    email=account.address,
-                    password=account.password,
-                    email_code=mask,
-                    invite_code=invite_code,
-                    retry=retry,
-                )
-            except:
+        mailbox = None
+        account = None
+        try:
+            only_gmail = bool(rr.whitelist and rr.verify)
+            mailbox = mailtm.create_instance(only_gmail=only_gmail)
+            account = mailbox.get_account()
+            if not account:
+                logger.error(f"cannot create temporary email account, site: {self.ref}")
                 return "", ""
+
+            message = None
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                starttime = time.time()
+                try:
+                    future = executor.submit(mailbox.monitor_account, account, 120, random.randint(1, 3))
+                    success = self.sen_email_verify(email=account.address, retry=3)
+                    if not success:
+                        future.cancel()
+                        return "", ""
+
+                    message = future.result(timeout=120)
+                    logger.debug(
+                        f"email has been received, domain: {self.ref}\\tcost: {int(time.time() - starttime)}s"
+                    )
+                except concurrent.futures.TimeoutError:
+                    logger.error(
+                        f"receiving mail timeout, site: {self.ref}, address: {mailbox.api_address}, email: {account.address}"
+                    )
+
+            if not message:
+                return "", ""
+
+            mask = mailbox.extract_mask(message.text) or mailbox.extract_mask(
+                message.text, r"[：\\s]+([0-9]{6})"
+            )
+            if not mask:
+                logger.error(f"cannot fetch verification code, url: {self.ref}")
+                return "", ""
+
+            return self.register(
+                email=account.address,
+                password=account.password,
+                email_code=mask,
+                invite_code=invite_code,
+                retry=retry,
+            )
+        except Exception as error:
+            logger.error(f"email registration failed, site: {self.ref}, error: {error}")
+            return "", ""
+        finally:
+            if mailbox is not None and account is not None:
+                try:
+                    mailbox.delete_account(account=account)
+                except Exception as error:
+                    logger.warning(f"temporary mailbox cleanup failed, site: {self.ref}, error: {error}")
 
     def _fetch_text(self, url: str, retry: int) -> str:
         url = utils.trim(url)
