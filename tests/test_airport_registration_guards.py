@@ -12,7 +12,8 @@ from unittest.mock import MagicMock, patch
 SUBSCRIBE_DIR = Path(__file__).resolve().parents[1] / "subscribe"
 sys.path.insert(0, str(SUBSCRIBE_DIR))
 
-from airport import Account, AirPort, RegisterRequire  # noqa: E402
+from airport import AirPort, RegisterRequire  # noqa: E402
+from mailtm import Account  # noqa: E402
 
 
 class AirportRegistrationGuardTests(unittest.TestCase):
