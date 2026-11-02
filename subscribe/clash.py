@@ -177,9 +177,9 @@ def speed_check(
     proxy: dict[str, object],
     group_name: str = "🌐 Proxy",
     proxy_port: int = 7890,
-    timeout: float = 8.0,
-    min_speed_mbps: float = 0.5,
-    test_bytes: int = 512 * 1024,
+    timeout: float = 12.0,
+    min_speed_mbps: float = 2.0,
+    test_bytes: int = 1024 * 1024,
 ) -> tuple[bool, float]:
     """Measure real download throughput through one selected Mihomo proxy."""
     name = str(proxy.get("name", ""))
