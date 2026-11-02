@@ -10,6 +10,7 @@ on:
       - "subscribe/examples/config.default.json"
       - "subscribe/clash.py"
       - "subscribe/pipeline.py"
+      - "subscribe/process.py"
       - ".github/workflows/process.yaml"
 
 env:
