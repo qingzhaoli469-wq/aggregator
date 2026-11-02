@@ -12,6 +12,7 @@ import ssl
 import string
 import urllib
 import urllib.parse
+import urllib.request
 from collections import defaultdict
 
 import executable
@@ -168,6 +169,68 @@ def check(
     except Exception as e:
         logger.debug(f"check failed, proxy: {proxy.get('name')}, message: {str(e)}")
         return False
+
+
+
+def speed_check(
+    proxy: dict[str, object],
+    group_name: str = "🌐 Proxy",
+    proxy_port: int = 7890,
+    timeout: float = 8.0,
+    min_speed_mbps: float = 0.5,
+    test_bytes: int = 512 * 1024,
+) -> tuple[bool, float]:
+    """Measure real download throughput through one selected Mihomo proxy."""
+    name = str(proxy.get("name", ""))
+    if not name:
+        return False, 0.0
+
+    controller_url = f"http://{EXTERNAL_CONTROLLER}/proxies/{urllib.parse.quote(group_name, safe='')}"
+    payload = json.dumps({"name": name}).encode("utf8")
+    request = urllib.request.Request(
+        controller_url,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="PUT",
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=3):
+            pass
+    except Exception as e:
+        logger.debug(f"speed test cannot select proxy [{name}]: {e}")
+        return False, 0.0
+
+    proxy_url = f"http://127.0.0.1:{proxy_port}"
+    opener = urllib.request.build_opener(
+        urllib.request.ProxyHandler({"http": proxy_url, "https": proxy_url}),
+        urllib.request.HTTPSHandler(context=CTX),
+    )
+    best_speed = 0.0
+    for target in DOWNLOAD_URL[1:]:
+        download = urllib.request.Request(
+            target,
+            headers={
+                "Range": f"bytes=0-{test_bytes - 1}",
+                "User-Agent": utils.USER_AGENT,
+                "Accept-Encoding": "identity",
+            },
+        )
+        started = time.monotonic()
+        try:
+            with opener.open(download, timeout=timeout) as response:
+                content = response.read(test_bytes)
+            elapsed = max(time.monotonic() - started, 0.001)
+            if len(content) < 128 * 1024:
+                continue
+            speed = len(content) * 8 / elapsed / 1_000_000
+            best_speed = max(best_speed, speed)
+            if best_speed >= min_speed_mbps:
+                return True, best_speed
+        except Exception as e:
+            logger.debug(f"speed test failed [{name}] via {target}: {e}")
+
+    return best_speed >= min_speed_mbps, best_speed
 
 
 def is_mihomo() -> bool:
