@@ -43,7 +43,8 @@ def apply_cooldowns(sites: list, state: dict) -> None:
     for site in sites or []:
         if getattr(site, "discovered", False):
             continue
-        record = records.get(site.name, {})
+        name = str(site.name).strip().lower()
+        record = records.get(name, {})
         until = _parse_time(record.get("disabled_until", ""))
         if until and until > now:
             site.enable = False
@@ -57,13 +58,17 @@ def update(state: dict, tasks: list, fetched: dict, qualified: dict, managed_nam
     """Update consecutive failure streaks from final post-speed-test source results."""
     now = _now()
     records = state.setdefault("sources", {})
+    totals = {}
     for task in tasks or []:
         name = str(getattr(task, "name", "")).strip().lower()
         if name not in managed_names:
             continue
+        current = totals.setdefault(name, {"fetched": 0, "qualified": 0})
+        current["fetched"] += int(fetched.get(task.taskid, 0) or 0)
+        current["qualified"] += int(qualified.get(task.taskid, 0) or 0)
 
-        got = int(fetched.get(task.taskid, 0) or 0)
-        passed = int(qualified.get(task.taskid, 0) or 0)
+    for name, counts in totals.items():
+        got, passed = counts["fetched"], counts["qualified"]
         record = records.setdefault(name, {"fail_streak": 0, "disabled_until": ""})
         if got > 0 and passed > 0:
             record["fail_streak"] = 0
