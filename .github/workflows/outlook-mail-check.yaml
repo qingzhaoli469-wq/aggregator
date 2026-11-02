@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "subscribe/mailtm.py"
+      - "subscribe/airport.py"
       - "subscribe/outlook_mail.py"
       - "subscribe/outlook_device_auth.py"
       - ".github/workflows/process.yaml"
@@ -27,4 +28,4 @@ jobs:
         run: python -m compileall -q subscribe
       - name: Import Outlook mailbox modules
         working-directory: subscribe
-        run: python -c "import mailtm, outlook_mail, outlook_device_auth; print('Outlook modules import successfully')"
+        run: python -c "import mailtm, outlook_mail, outlook_device_auth, airport; print('Outlook integration imports successfully')"
