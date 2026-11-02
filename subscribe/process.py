@@ -193,6 +193,8 @@ def aggregate(args: argparse.Namespace) -> None:
     results = utils.multi_process_run(func=workflow.executewrapper, tasks=tasks)
 
     subscribes, datasets = {}, {}
+    source_names = {task.taskid: task.name for task in tasks}
+    source_fetched = {task.taskid: 0 for task in tasks}
     for i in range(len(results)):
         data = results[i]
         if not data or data[0] < 0 or not data[1]:
@@ -203,6 +205,15 @@ def aggregate(args: argparse.Namespace) -> None:
             continue
 
         datasets[data[0]] = data[1]
+        source_fetched[data[0]] = len(data[1])
+        for proxy in data[1]:
+            if isinstance(proxy, dict):
+                proxy["_source_name"] = source_names.get(data[0], "unknown")
+
+    for task in tasks:
+        logger.info(
+            f"[SourceFetch] source={task.name} fetched={source_fetched.get(task.taskid, 0)}"
+        )
 
     for k, v in groups.items():
         if not v:
@@ -232,8 +243,21 @@ def aggregate(args: argparse.Namespace) -> None:
             group=k,
         )
 
+        passed_by_source = {}
+        for item in nochecks:
+            source = str(item.get("_source_name", "unknown"))
+            passed_by_source[source] = passed_by_source.get(source, 0) + 1
+        for task in tasks:
+            if task.taskid in v:
+                fetched = source_fetched.get(task.taskid, 0)
+                passed = passed_by_source.get(task.name, 0)
+                logger.info(
+                    f"[SourceQuality] source={task.name} fetched={fetched} "
+                    f"qualified={passed} rejected={max(0, fetched - passed)}"
+                )
         for item in nochecks:
             item.pop("sub", "")
+            item.pop("_source_name", "")
 
         if len(nochecks) <= 0:
             logger.error(f"cannot fetch any proxy, group=[{k}], cost: {time.time()-starttime:.2f}s")
