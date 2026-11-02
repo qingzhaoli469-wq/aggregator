@@ -65,23 +65,26 @@ class TemporaryMail(object):
         timeout = min(600, max(0, timeout))
         sleep = min(max(1, sleep), 10)
         endtime = time.time() + timeout
-        try:
-            messages = self.get_messages(account=account)
-            start = len(messages)
 
+        def message_key(message: Message) -> tuple:
+            if message.id:
+                return ("id", message.id)
+            sender = json.dumps(message.sender or {}, sort_keys=True, ensure_ascii=False, default=str)
+            return ("content", message.subject, sender, message.text or message.html or message.intro)
+
+        try:
+            initial = self.get_messages(account=account)
+            known = {message_key(message) for message in initial}
             while True:
                 messages = self.get_messages(account=account)
-                if len(messages) != start or time.time() >= endtime:
-                    break
-
+                new_messages = [message for message in messages if message_key(message) not in known]
+                if new_messages:
+                    return new_messages[0]
+                if time.time() >= endtime:
+                    return None
                 time.sleep(sleep)
-
-            if not messages:
-                return None
-
-            return messages[0]
-        except:
-            logger.error(f"cannot get any message from address: {account.address}")
+        except Exception as error:
+            logger.error(f"cannot monitor mailbox {account.address}: {error}")
             return None
 
     def delete_account(self, account: Account) -> bool:
