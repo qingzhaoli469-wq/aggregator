@@ -222,6 +222,7 @@ class RootSh(TemporaryMail):
                         content = utils.http_get(url=url, headers=headers)
                         messages.append(
                             Message(
+                                id=str(mail[4]),
                                 sender=sender,
                                 to={account.address: account.address},
                                 subject=subject,
@@ -632,7 +633,7 @@ class MOAKT(TemporaryMail):
             content = utils.http_get(url=url, headers=self.headers)
             if not content:
                 continue
-            messages.append(Message(text=content, html=content))
+            messages.append(Message(id=mail.rsplit('/', maxsplit=1)[-1], text=content, html=content))
         return messages
 
     def delete_account(self, account: Account) -> bool:
