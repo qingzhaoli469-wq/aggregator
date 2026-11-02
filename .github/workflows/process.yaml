@@ -9,6 +9,7 @@ on:
     paths:
       - "subscribe/examples/config.default.json"
       - "subscribe/clash.py"
+      - "subscribe/pipeline.py"
       - ".github/workflows/process.yaml"
 
 env:
@@ -23,6 +24,8 @@ env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   # not check connective
   SKIP_ALIVE_CHECK: ${{ vars.SKIP_ALIVE_CHECK }}
+  ENABLE_SPEED_TEST: "true"
+  MIN_SPEED_MBPS: "0.5"
 
   # skip remark
   SKIP_REMARK: ${{ vars.SKIP_REMARK }}
