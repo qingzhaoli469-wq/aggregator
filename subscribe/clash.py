@@ -138,10 +138,9 @@ def check(
 
     # 失败重试间隔：30ms ~ 200ms
     interval = random.randint(30, 200) / 1000
-    targets = [
-        test_url,
-        "https://www.youtube.com/s/player/23010b46/player_ias.vflset/en_US/remote.js",
-    ]
+    # Use the configured connectivity endpoint as the liveness criterion.
+    # Requiring an unrelated hard-coded YouTube URL can reject otherwise usable proxies.
+    targets = [test_url]
     if strict:
         targets.append(random.choice(DOWNLOAD_URL))
     try:
