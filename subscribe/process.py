@@ -27,6 +27,7 @@ from workflow import TaskConfig
 
 import clash
 import subconverter
+import source_health
 
 PATH = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -168,6 +169,14 @@ def aggregate(args: argparse.Namespace) -> None:
     )
 
     pushtool = push.get_instance(process_config.storage)
+    health_item = process_config.storage.items.get("source-health")
+    managed_source_names = {
+        utils.trim(site.name).lower()
+        for site in process_config.sites
+        if not getattr(site, "discovered", False) and utils.trim(site.name)
+    }
+    health_state = source_health.load(push=pushtool, item=health_item)
+    source_health.apply_cooldowns(sites=process_config.sites, state=health_state)
 
     # generate tasks
     tasks, groups = assign(
@@ -195,6 +204,7 @@ def aggregate(args: argparse.Namespace) -> None:
     subscribes, datasets = {}, {}
     source_names = {task.taskid: task.name for task in tasks}
     source_fetched = {task.taskid: 0 for task in tasks}
+    source_qualified = {task.taskid: 0 for task in tasks}
     for i in range(len(results)):
         data = results[i]
         if not data or data[0] < 0 or not data[1]:
@@ -258,6 +268,9 @@ def aggregate(args: argparse.Namespace) -> None:
         for item in nochecks:
             item.pop("sub", "")
             item.pop("_source_name", "")
+        for task in tasks:
+            if task.taskid in v:
+                source_qualified[task.taskid] = passed_by_source.get(task.name, 0)
 
         if len(nochecks) <= 0:
             logger.error(f"cannot fetch any proxy, group=[{k}], cost: {time.time()-starttime:.2f}s")
@@ -349,6 +362,15 @@ def aggregate(args: argparse.Namespace) -> None:
         workflow.cleanup(os.path.join(PATH, "subconverter"), [source_file])
         cost = "{:.2f}s".format(time.time() - starttime)
         logger.info(f"group [{k}] process finished, count: {len(nochecks)}, cost: {cost}")
+
+    source_health.update(
+        state=health_state,
+        tasks=tasks,
+        fetched=source_fetched,
+        qualified=source_qualified,
+        managed_names=managed_source_names,
+    )
+    source_health.save(push=pushtool, item=health_item, state=health_state)
 
     workflow.refresh(
         config=process_config,
