@@ -164,5 +164,11 @@ class TemporaryMailMonitorTests(unittest.TestCase):
         self.assertIsNone(result)
 
 
+    def test_fallback_otp_regex_accepts_whitespace_after_colon(self):
+        mailbox = TemporaryMail()
+        code = mailbox.extract_mask("验证码： 123456", r"[：\\s]+([0-9]{6})")
+        self.assertEqual(code, "123456")
+
+
 if __name__ == "__main__":
     unittest.main()
