@@ -1,31 +1,48 @@
 {
-  "sites": [],
+  "domains": [],
   "crawl": {
     "enable": true,
     "exclude": "",
-    "max_fails": 5,
-    "include_nodes": true,
     "persist": {
       "subscribe": "crawledsubs",
       "nodes": "crawledproxies"
-    },
-    "task": {
-      "rename": "",
-      "include": "",
-      "exclude": ""
     },
     "telegram": {
       "enable": true,
       "pages": 5,
       "exclude": "",
-      "channels": {}
+      "users": {
+        "abc_vpn_configs": {
+          "push_to": ["free"]
+        },
+        "v2Line": {
+          "push_to": ["free"]
+        },
+        "tgproxypink": {
+          "push_to": ["free"]
+        },
+        "free1_vpn": {
+          "push_to": ["free"]
+        },
+        "OnlineVpnConfigs": {
+          "push_to": ["free"]
+        },
+        "PrivateVPNs": {
+          "push_to": ["free"]
+        },
+        "ConfigOrg": {
+          "push_to": ["free"]
+        },
+        "pgkj666": {
+          "push_to": ["free"]
+        }
+      }
     },
     "google": {
       "enable": true,
       "exclude": "",
       "limit": 100,
       "days": 7,
-      "exclude_sites": [],
       "push_to": ["free"]
     },
     "yandex": {
@@ -33,15 +50,13 @@
       "exclude": "",
       "days": 3,
       "pages": 5,
-      "exclude_sites": [],
       "push_to": ["free"]
     },
     "github": {
       "enable": true,
       "pages": 2,
       "push_to": ["free"],
-      "exclude": "",
-      "exclude_repos": []
+      "spams": []
     },
     "twitter": {
       "enable": false,
@@ -54,15 +69,14 @@
   "groups": {
     "free": {
       "emoji": true,
-      "list_only": true,
+      "list": true,
       "targets": {
         "clash": "free-clash"
       },
       "regularize": {
         "enable": false,
         "locate": true,
-        "residential": true,
-        "digits": 2
+        "bits": 2
       }
     }
   },
@@ -71,17 +85,17 @@
     "items": {
       "free-clash": {
         "username": "qingzhaoli469-wq",
-        "gist_id": "7fffa0bb40a736e39829e70ff0137195",
+        "gistid": "7fffa0bb40a736e39829e70ff0137195",
         "filename": "clash.yaml"
       },
       "crawledsubs": {
         "username": "qingzhaoli469-wq",
-        "gist_id": "7fffa0bb40a736e39829e70ff0137195",
+        "gistid": "7fffa0bb40a736e39829e70ff0137195",
         "filename": "subscriptions.json"
       },
       "crawledproxies": {
         "username": "qingzhaoli469-wq",
-        "gist_id": "7fffa0bb40a736e39829e70ff0137195",
+        "gistid": "7fffa0bb40a736e39829e70ff0137195",
         "filename": "crawledproxies.txt"
       }
     }
