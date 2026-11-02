@@ -516,7 +516,7 @@ class AirPort:
                 return "", ""
 
             mask = mailbox.extract_mask(message.text) or mailbox.extract_mask(
-                message.text, r"[：\\s]+([0-9]{6})"
+                message.text, r"[：\s]+([0-9]{6})"
             )
             if not mask:
                 logger.error(f"cannot fetch verification code, url: {self.ref}")
