@@ -53,7 +53,7 @@ jobs:
         run: pip3 install -r requirements.txt
 
       - name: Process
-        run: python -u subscribe/process.py --overwrite
+        run: python -u subscribe/process.py --overwrite --url https://cp.cloudflare.com/generate_204
 
       - name: Timestamp
         run: date
