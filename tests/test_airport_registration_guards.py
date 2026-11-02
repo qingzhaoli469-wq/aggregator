@@ -21,6 +21,24 @@ class AirportRegistrationGuardTests(unittest.TestCase):
         self.airport = AirPort(name="test", site="https://example.invalid")
 
     @patch("mailtm.create_instance")
+    @patch.object(
+        AirPort,
+        "get_register_require",
+        return_value=RegisterRequire(verify=True, invite=True, recaptcha=True),
+    )
+    def test_unknown_registration_requirements_fail_closed(self, get_requirements, create_mailbox):
+        result = self.airport.get_subscribe(retry=1)
+
+        self.assertEqual(result, ("", ""))
+        self.assertFalse(self.airport.available)
+        get_requirements.assert_called_once_with(
+            domain=self.airport.ref,
+            default=True,
+            api_prefix=self.airport.api_prefix,
+        )
+        create_mailbox.assert_not_called()
+
+    @patch("mailtm.create_instance")
     def test_skip_recaptcha_without_solving_it(self, create_mailbox):
         result = self.airport.get_subscribe(
             retry=1,
