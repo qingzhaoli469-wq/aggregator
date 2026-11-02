@@ -13,7 +13,7 @@ SUBSCRIBE_DIR = Path(__file__).resolve().parents[1] / "subscribe"
 sys.path.insert(0, str(SUBSCRIBE_DIR))
 
 from airport import AirPort, RegisterRequire  # noqa: E402
-from mailtm import Account  # noqa: E402
+from mailtm import Account, Message, TemporaryMail  # noqa: E402
 
 
 class AirportRegistrationGuardTests(unittest.TestCase):
@@ -90,6 +90,41 @@ class AirportRegistrationGuardTests(unittest.TestCase):
         self.assertEqual(result, ("", ""))
         mailbox.delete_account.assert_called_once_with(account=account)
         future.cancel.assert_called_once()
+
+
+class TemporaryMailMonitorTests(unittest.TestCase):
+    def test_detects_new_message_when_inbox_count_is_unchanged(self):
+        account = Account(address="test@example.invalid")
+        old_message = Message(id="old", text="old content")
+        new_message = Message(id="new", text="verification code 123456")
+        
+        class FakeMailbox(TemporaryMail):
+            def __init__(self):
+                super().__init__()
+                self.responses = iter([[old_message], [new_message]])
+
+            def get_messages(self, account):
+                return next(self.responses)
+
+        mailbox = FakeMailbox()
+        with patch("mailtm.time.sleep"):
+            result = mailbox.monitor_account(account, timeout=10, sleep=1)
+
+        self.assertEqual(result.id, "new")
+
+    def test_returns_none_when_no_new_message_arrives(self):
+        account = Account(address="test@example.invalid")
+        old_message = Message(id="old", text="old content")
+
+        class FakeMailbox(TemporaryMail):
+            def get_messages(self, account):
+                return [old_message]
+
+        mailbox = FakeMailbox()
+        with patch("mailtm.time.time", side_effect=[0, 1, 2]), patch("mailtm.time.sleep"):
+            result = mailbox.monitor_account(account, timeout=1, sleep=1)
+
+        self.assertIsNone(result)
 
 
 if __name__ == "__main__":
