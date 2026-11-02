@@ -19,14 +19,14 @@
       "pages": 5,
       "exclude": "",
       "channels": {
-        "abc_vpn_configs": true,
-        "v2Line": true,
-        "tgproxypink": true,
-        "free1_vpn": true,
-        "OnlineVpnConfigs": true,
-        "PrivateVPNs": true,
-        "ConfigOrg": true,
-        "pgkj666": true
+        "abc_vpn_configs": { "push_to": ["free"] },
+        "v2Line": { "push_to": ["free"] },
+        "tgproxypink": { "push_to": ["free"] },
+        "free1_vpn": { "push_to": ["free"] },
+        "OnlineVpnConfigs": { "push_to": ["free"] },
+        "PrivateVPNs": { "push_to": ["free"] },
+        "ConfigOrg": { "push_to": ["free"] },
+        "pgkj666": { "push_to": ["free"] }
       }
     },
     "google": {
