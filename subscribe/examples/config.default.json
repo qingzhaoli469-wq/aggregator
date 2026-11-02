@@ -1,39 +1,87 @@
+
 {
-  "domains": [],
+  "sites": [],
   "crawl": {
     "enable": true,
     "exclude": "",
+    "max_fails": 5,
+    "include_nodes": true,
     "persist": {
       "subscribe": "crawledsubs",
       "nodes": "crawledproxies"
+    },
+    "task": {
+      "rename": "",
+      "include": "",
+      "exclude": ""
     },
     "telegram": {
       "enable": true,
       "pages": 5,
       "exclude": "",
-      "users": {
+      "channels": {
         "abc_vpn_configs": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         },
         "v2Line": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         },
         "tgproxypink": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         },
         "free1_vpn": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         },
         "OnlineVpnConfigs": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         },
         "PrivateVPNs": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         },
         "ConfigOrg": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         },
         "pgkj666": {
+          "include": "",
+          "exclude": "",
+          "task": {
+            "rename": "TG-{name}"
+          },
           "push_to": ["free"]
         }
       }
@@ -43,6 +91,7 @@
       "exclude": "",
       "limit": 100,
       "days": 7,
+      "exclude_sites": [],
       "push_to": ["free"]
     },
     "yandex": {
@@ -50,13 +99,15 @@
       "exclude": "",
       "days": 3,
       "pages": 5,
+      "exclude_sites": [],
       "push_to": ["free"]
     },
     "github": {
       "enable": true,
       "pages": 2,
       "push_to": ["free"],
-      "spams": []
+      "exclude": "",
+      "exclude_repos": []
     },
     "twitter": {
       "enable": false,
@@ -69,14 +120,15 @@
   "groups": {
     "free": {
       "emoji": true,
-      "list": true,
+      "list_only": true,
       "targets": {
         "clash": "free-clash"
       },
       "regularize": {
         "enable": false,
         "locate": true,
-        "bits": 2
+        "residential": true,
+        "digits": 2
       }
     }
   },
@@ -85,17 +137,17 @@
     "items": {
       "free-clash": {
         "username": "qingzhaoli469-wq",
-        "gistid": "7fffa0bb40a736e39829e70ff0137195",
+        "gist_id": "7fffa0bb40a736e39829e70ff0137195",
         "filename": "clash.yaml"
       },
       "crawledsubs": {
         "username": "qingzhaoli469-wq",
-        "gistid": "7fffa0bb40a736e39829e70ff0137195",
+        "gist_id": "7fffa0bb40a736e39829e70ff0137195",
         "filename": "subscriptions.json"
       },
       "crawledproxies": {
         "username": "qingzhaoli469-wq",
-        "gistid": "7fffa0bb40a736e39829e70ff0137195",
+        "gist_id": "7fffa0bb40a736e39829e70ff0137195",
         "filename": "crawledproxies.txt"
       }
     }
