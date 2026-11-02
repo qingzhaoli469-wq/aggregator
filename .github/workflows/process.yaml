@@ -11,6 +11,7 @@ on:
       - "subscribe/clash.py"
       - "subscribe/pipeline.py"
       - "subscribe/process.py"
+      - "subscribe/source_health.py"
       - ".github/workflows/process.yaml"
 
 env:
