@@ -1,0 +1,30 @@
+name: Outlook mailbox checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "subscribe/mailtm.py"
+      - "subscribe/outlook_mail.py"
+      - "subscribe/outlook_device_auth.py"
+      - ".github/workflows/process.yaml"
+      - ".github/workflows/outlook-mail-check.yaml"
+  workflow_dispatch:
+
+jobs:
+  syntax-and-import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install project requirements
+        run: python -m pip install -r requirements.txt
+      - name: Compile Python modules
+        run: python -m compileall -q subscribe
+      - name: Import Outlook mailbox modules
+        working-directory: subscribe
+        run: python -c "import mailtm, outlook_mail, outlook_device_auth; print('Outlook modules import successfully')"
