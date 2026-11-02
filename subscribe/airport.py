@@ -484,13 +484,45 @@ class AirPort:
             email = f"{email}@{email_domain}"
             return self.register(email=email, password=password, invite_code=invite_code, retry=retry)
         else:
-            only_gmail = True if rr.whitelist and rr.verify else False
+            # Prefer an explicitly configured Outlook mailbox when its domain is
+            # accepted by the site's email whitelist. Otherwise retain the
+            # existing Gmail-alias path for Gmail-only whitelist sites.
+            whitelist = {
+                str(item).strip().lower().lstrip("@").strip(".")
+                for item in (rr.whitelist or [])
+                if str(item).strip()
+            }
+            outlook_email = os.environ.get("OUTLOOK_EMAIL", "").strip().lower()
+            outlook_domain = outlook_email.rsplit("@", 1)[-1] if "@" in outlook_email else ""
+            outlook_ready = all(
+                os.environ.get(key, "").strip()
+                for key in ("OUTLOOK_EMAIL", "OUTLOOK_CLIENT_ID", "OUTLOOK_REFRESH_TOKEN")
+            )
+            use_outlook = bool(
+                rr.whitelist and rr.verify and outlook_ready and outlook_domain in whitelist
+            )
+            only_gmail = bool(
+                rr.whitelist and rr.verify and not use_outlook
+                and allow_gmail_alias and "gmail.com" in whitelist
+            )
+
+            if rr.whitelist and rr.verify and not (use_outlook or only_gmail):
+                self.available = False
+                return "", ""
 
             try:
                 mailbox = mailtm.create_instance(only_gmail=only_gmail)
                 account = mailbox.get_account()
                 if not account:
-                    logger.error(f"cannot create temporary email account, site: {self.ref}")
+                    logger.error(f"cannot create email account, site: {self.ref}")
+                    return "", ""
+
+                # Do not submit an address that violates the site's whitelist.
+                account_domain = account.address.rsplit("@", 1)[-1].lower()
+                if whitelist and account_domain not in whitelist:
+                    mailbox.delete_account(account=account)
+                    logger.info(f"email domain is not accepted by site whitelist, site: {self.ref}")
+                    self.available = False
                     return "", ""
 
                 message = None
