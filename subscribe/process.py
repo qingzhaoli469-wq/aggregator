@@ -67,6 +67,9 @@ def load_configs(
                 os.environ["SUBSCRIBE_CONF"] = localfile
 
         config = ProcessConfig.parse(raw or {})
+        config._managed_source_names = {
+            utils.trim(site.name).lower() for site in config.sites if utils.trim(site.name)
+        }
         pushtool = push.get_instance(config.storage)
         config.verify(pushtool)
         crawl_enabled = bool(config.crawl and config.crawl.enable)
@@ -170,13 +173,11 @@ def aggregate(args: argparse.Namespace) -> None:
 
     pushtool = push.get_instance(process_config.storage)
     health_item = process_config.storage.items.get("source-health")
-    managed_source_names = {
-        utils.trim(site.name).lower()
-        for site in process_config.sites
-        if not getattr(site, "discovered", False) and utils.trim(site.name)
-    }
+    managed_source_names = getattr(process_config, "_managed_source_names", set())
     health_state = source_health.load(push=pushtool, item=health_item)
-    source_health.apply_cooldowns(sites=process_config.sites, state=health_state)
+    source_health.apply_cooldowns(
+        sites=process_config.sites, state=health_state, managed_names=managed_source_names
+    )
 
     # generate tasks
     tasks, groups = assign(
