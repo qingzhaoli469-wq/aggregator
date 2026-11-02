@@ -127,6 +127,24 @@ class OutlookGraphMail(TemporaryMail):
             self.access_token = ""
             return []
 
+    def monitor_account(self, account: Account, timeout: int = 300, sleep: int = 3) -> Message | None:
+        """Wait for a message whose Graph ID was not present at startup."""
+        import time
+
+        if not account:
+            return None
+        timeout = min(600, max(0, timeout))
+        sleep = min(max(1, sleep), 10)
+        initial = self.get_messages(account)
+        seen = {item.id for item in initial if item.id}
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            for item in self.get_messages(account):
+                if item.id and item.id not in seen:
+                    return item
+            time.sleep(sleep)
+        return None
+
     def delete_account(self, account: Account) -> bool:
         # Never delete the user's real Outlook mailbox or its messages.
         return True
