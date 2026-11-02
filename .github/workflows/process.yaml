@@ -1,4 +1,9 @@
 name: Process
+
+concurrency:
+  group: aggregator-process-main
+  cancel-in-progress: false
+
 on:
   schedule:
     - cron: "05 03 * * *"
