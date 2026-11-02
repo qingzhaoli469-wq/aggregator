@@ -463,7 +463,7 @@ class AirPort:
         # Skip registration paths that require an unavailable human challenge.
         if (
             (rr.invite and not invite_code)
-            or (skip_captcha and rr.recaptcha)
+            or rr.recaptcha
             or (rr.whitelist and rr.verify and (not allow_gmail_alias or "gmail.com" not in rr.whitelist))
         ):
             self.available = False
