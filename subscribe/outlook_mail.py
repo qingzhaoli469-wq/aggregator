@@ -72,9 +72,13 @@ class OutlookGraphMail(TemporaryMail):
             self.access_token = data.get("access_token", "")
             rotated = data.get("refresh_token", "")
             if rotated and rotated != self.refresh_token:
+                # Use the rotated token for subsequent refreshes in this run.
+                # Persisting it across GitHub Actions runs requires an external
+                # secret-store update, which this adapter deliberately does not do.
+                self.refresh_token = rotated
                 logger.warning(
                     "[OutlookGraphInfo] Microsoft returned a rotated refresh token; "
-                    "update OUTLOOK_REFRESH_TOKEN in your secret store if future refreshes fail"
+                    "if a later run cannot refresh, re-authorize and update OUTLOOK_REFRESH_TOKEN"
                 )
             return bool(self.access_token)
         except Exception as exc:
