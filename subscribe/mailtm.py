@@ -781,6 +781,17 @@ def create_instance(only_gmail: bool = False) -> TemporaryMail:
     if only_gmail:
         return Emailnator(onlygmail=True)
 
+    # Prefer the user's own Outlook mailbox when Graph OAuth is configured.
+    # Keep the existing temporary-mail providers as the default fallback.
+    import os
+
+    if all(os.environ.get(key, "").strip() for key in (
+        "OUTLOOK_EMAIL", "OUTLOOK_CLIENT_ID", "OUTLOOK_REFRESH_TOKEN"
+    )):
+        from outlook_mail import OutlookGraphMail
+
+        return OutlookGraphMail()
+
     num = random.randint(0, 1)
     if num == 1:
         return MailTM()
