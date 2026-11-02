@@ -1,5 +1,69 @@
 {
-  "sites": [],
+  "sites": [
+    {
+      "name": "github-ermaozi-clash",
+      "subscribe": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-freenodesdaily-tested",
+      "subscribe": "https://raw.githubusercontent.com/LStar404/FreeNodesDaily/data/best_nodes.yml",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-shaoyouvip-free",
+      "subscribe": "https://raw.githubusercontent.com/shaoyouvip/free/refs/heads/main/all.yaml",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-ripaojiedian-clash",
+      "subscribe": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-zhangkai-speednodes",
+      "subscribe": "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.yaml",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-mfuu-freeproxies",
+      "subscribe": "https://raw.githubusercontent.com/mfuu/FreeProxies/master/sub",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-pawdroid-free-servers",
+      "subscribe": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-freefq-free",
+      "subscribe": "https://raw.githubusercontent.com/freefq/free/master/v2",
+      "push_to": [
+        "free"
+      ]
+    },
+    {
+      "name": "github-nomorewalls-list",
+      "subscribe": "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt",
+      "push_to": [
+        "free"
+      ]
+    }
+  ],
   "crawl": {
     "enable": true,
     "exclude": "",
@@ -13,21 +77,55 @@
       "rename": "",
       "include": "",
       "exclude": "",
-      "push_to": ["free"]
+      "push_to": [
+        "free"
+      ]
     },
     "telegram": {
       "enable": true,
       "pages": 5,
       "exclude": "",
       "channels": {
-        "abc_vpn_configs": { "push_to": ["free"] },
-        "v2Line": { "push_to": ["free"] },
-        "tgproxypink": { "push_to": ["free"] },
-        "free1_vpn": { "push_to": ["free"] },
-        "OnlineVpnConfigs": { "push_to": ["free"] },
-        "PrivateVPNs": { "push_to": ["free"] },
-        "ConfigOrg": { "push_to": ["free"] },
-        "pgkj666": { "push_to": ["free"] }
+        "abc_vpn_configs": {
+          "push_to": [
+            "free"
+          ]
+        },
+        "v2Line": {
+          "push_to": [
+            "free"
+          ]
+        },
+        "tgproxypink": {
+          "push_to": [
+            "free"
+          ]
+        },
+        "free1_vpn": {
+          "push_to": [
+            "free"
+          ]
+        },
+        "OnlineVpnConfigs": {
+          "push_to": [
+            "free"
+          ]
+        },
+        "PrivateVPNs": {
+          "push_to": [
+            "free"
+          ]
+        },
+        "ConfigOrg": {
+          "push_to": [
+            "free"
+          ]
+        },
+        "pgkj666": {
+          "push_to": [
+            "free"
+          ]
+        }
       }
     },
     "google": {
@@ -36,7 +134,9 @@
       "limit": 100,
       "days": 7,
       "exclude_sites": [],
-      "push_to": ["free"]
+      "push_to": [
+        "free"
+      ]
     },
     "yandex": {
       "enable": true,
@@ -44,12 +144,16 @@
       "days": 3,
       "pages": 5,
       "exclude_sites": [],
-      "push_to": ["free"]
+      "push_to": [
+        "free"
+      ]
     },
     "github": {
       "enable": true,
       "pages": 2,
-      "push_to": ["free"],
+      "push_to": [
+        "free"
+      ],
       "exclude": "",
       "exclude_repos": []
     },
