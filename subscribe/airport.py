@@ -461,11 +461,7 @@ class AirPort:
         )
 
         # 需要邀请码或者强制验证
-        if (
-            (rr.invite and not invite_code)
-            or (skip_captcha and rr.recaptcha)
-            or (rr.whitelist and rr.verify and (not allow_gmail_alias or "gmail.com" not in rr.whitelist))
-        ):
+        if ( (rr.invite and not invite_code) or (skip_captcha and rr.recaptcha) ):
             self.available = False
             return "", ""
 
