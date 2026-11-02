@@ -112,6 +112,25 @@ class TemporaryMailMonitorTests(unittest.TestCase):
 
         self.assertEqual(result.id, "new")
 
+    def test_detects_new_message_without_provider_message_id(self):
+        account = Account(address="test@example.invalid")
+        old_message = Message(text="old content", subject="notice")
+        new_message = Message(text="new verification code 654321", subject="notice")
+
+        class FakeMailbox(TemporaryMail):
+            def __init__(self):
+                super().__init__()
+                self.responses = iter([[old_message], [new_message]])
+
+            def get_messages(self, account):
+                return next(self.responses)
+
+        mailbox = FakeMailbox()
+        with patch("mailtm.time.sleep"):
+            result = mailbox.monitor_account(account, timeout=10, sleep=1)
+
+        self.assertEqual(result.text, "new verification code 654321")
+
     def test_returns_none_when_no_new_message_arrives(self):
         account = Account(address="test@example.invalid")
         old_message = Message(id="old", text="old content")
