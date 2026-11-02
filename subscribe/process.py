@@ -363,6 +363,7 @@ def aggregate(args: argparse.Namespace) -> None:
         cost = "{:.2f}s".format(time.time() - starttime)
         logger.info(f"group [{k}] process finished, count: {len(nochecks)}, cost: {cost}")
 
+    # Persist consecutive failures per configured source.
     source_health.update(
         state=health_state,
         tasks=tasks,
