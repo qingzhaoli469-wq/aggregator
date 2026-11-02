@@ -188,6 +188,28 @@ def check_alive_proxies(
     logger.info(
         f"proxies check finished, total: {len(checks)}, alive: {len(availables)}, dead: {len(checks) - len(availables)}"
     )
+    if not skip and os.getenv("ENABLE_SPEED_TEST", "true").lower() not in ["0", "false", "no"]:
+        try:
+            min_speed = max(0.1, float(os.getenv("MIN_SPEED_MBPS", "0.5")))
+        except ValueError:
+            min_speed = 0.5
+        speed_passed = []
+        for index, item in enumerate(nochecks, 1):
+            passed, speed = clash.speed_check(item, min_speed_mbps=min_speed)
+            if passed:
+                item["download_speed_mbps"] = round(speed, 2)
+                speed_passed.append(item)
+            if index % 10 == 0 or index == len(nochecks):
+                logger.info(
+                    f"download speed test progress: {index}/{len(nochecks)}, "
+                    f"passed: {len(speed_passed)}, minimum: {min_speed:.2f} Mbps"
+                )
+        logger.info(
+            f"download speed test finished: total={len(nochecks)}, "
+            f"passed={len(speed_passed)}, filtered={len(nochecks) - len(speed_passed)}"
+        )
+        nochecks = speed_passed
+
     return nochecks
 
 
