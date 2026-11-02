@@ -12,7 +12,8 @@
     "task": {
       "rename": "",
       "include": "",
-      "exclude": ""
+      "exclude": "",
+      "push_to": ["free"]
     },
     "telegram": {
       "enable": true,
