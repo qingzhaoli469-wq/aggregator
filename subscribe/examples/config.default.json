@@ -1,47 +1,37 @@
 {
-  "sites": [],
+  "domains": [],
   "crawl": {
     "enable": true,
     "exclude": "",
-    "max_fails": 5,
-    "include_nodes": true,
     "persist": {
       "subscribe": "crawledsubs",
       "nodes": "crawledproxies"
-    },
-    "task": {
-      "rename": "",
-      "include": "",
-      "exclude": ""
     },
     "telegram": {
       "enable": true,
       "pages": 5,
       "exclude": "",
-      "channels": {}
+      "users": {}
     },
     "google": {
       "enable": true,
       "exclude": "",
       "limit": 100,
       "days": 7,
-      "exclude_sites": [],
-      "push_to": []
+      "push_to": ["free"]
     },
     "yandex": {
       "enable": true,
       "exclude": "",
       "days": 3,
       "pages": 5,
-      "exclude_sites": [],
-      "push_to": []
+      "push_to": ["free"]
     },
     "github": {
       "enable": true,
       "pages": 2,
-      "push_to": [],
-      "exclude": "",
-      "exclude_repos": []
+      "push_to": ["free"],
+      "spams": []
     },
     "twitter": {
       "enable": false,
@@ -52,48 +42,36 @@
     "scripts": []
   },
   "groups": {
-    "xxx": {
+    "free": {
       "emoji": true,
-      "list_only": true,
+      "list": true,
       "targets": {
-        "clash": "xxx-clash",
-        "singbox": "xxx-singbox",
-        "v2ray": "xxx-v2ray"
+        "clash": "free-clash"
       },
       "regularize": {
         "enable": false,
         "locate": true,
-        "residential": true,
-        "digits": 2
+        "bits": 2
       }
     }
   },
   "storage": {
-    "engine": "xxx",
-    "base": "https://api.xxx.com",
-    "domain": "https://xxx.com",
+    "engine": "gist",
     "items": {
-      "xxx-clash": {
-        "username": "",
-        "folder_id": "",
-        "file_id": ""
-      },
-      "xxx-singbox": {
-        "file_id": ""
-      },
-      "xxx-v2ray": {
-        "username": "",
-        "file_id": ""
+      "free-clash": {
+        "username": "qingzhaoli469-wq",
+        "gistid": "7fffa0bb40a736e39829e70ff0137195",
+        "filename": "clash.yaml"
       },
       "crawledsubs": {
-        "username": "",
-        "folder_id": "",
-        "file_id": ""
+        "username": "qingzhaoli469-wq",
+        "gistid": "7fffa0bb40a736e39829e70ff0137195",
+        "filename": "subscriptions.json"
       },
       "crawledproxies": {
-        "username": "",
-        "folder_id": "",
-        "file_id": ""
+        "username": "qingzhaoli469-wq",
+        "gistid": "7fffa0bb40a736e39829e70ff0137195",
+        "filename": "crawledproxies.txt"
       }
     }
   }
