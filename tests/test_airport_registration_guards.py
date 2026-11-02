@@ -25,7 +25,7 @@ class AirportRegistrationGuardTests(unittest.TestCase):
         result = self.airport.get_subscribe(
             retry=1,
             rr=RegisterRequire(verify=True, invite=False, recaptcha=True),
-            skip_captcha=True,
+            skip_captcha=False,
         )
         self.assertEqual(result, ("", ""))
         self.assertFalse(self.airport.available)
