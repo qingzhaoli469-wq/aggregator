@@ -25,7 +25,7 @@ env:
   # not check connective
   SKIP_ALIVE_CHECK: ${{ vars.SKIP_ALIVE_CHECK }}
   ENABLE_SPEED_TEST: "true"
-  MIN_SPEED_MBPS: "0.5"
+  MIN_SPEED_MBPS: "1.0"
 
   # skip remark
   SKIP_REMARK: ${{ vars.SKIP_REMARK }}
