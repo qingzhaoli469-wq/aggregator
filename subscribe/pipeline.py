@@ -185,9 +185,9 @@ def check_alive_proxies(
     )
     if not skip and os.getenv("ENABLE_SPEED_TEST", "true").lower() not in ["0", "false", "no"]:
         try:
-            min_speed = max(0.1, float(os.getenv("MIN_SPEED_MBPS", "0.5")))
+            min_speed = max(0.1, float(os.getenv("MIN_SPEED_MBPS", "2.0")))
         except ValueError:
-            min_speed = 0.5
+            min_speed = 2.0
         speed_passed = []
         for index, item in enumerate(nochecks, 1):
             passed, speed = clash.speed_check(item, min_speed_mbps=min_speed)
