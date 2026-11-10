@@ -6,8 +6,8 @@ concurrency:
 
 on:
   schedule:
-    - cron: "05 03 * * *"
-    - cron: "05 11 * * *"
+    - cron: "06 03 * * *"
+    - cron: "06 11 * * *"
   workflow_dispatch:
   push:
     branches: [main]
